@@ -7,6 +7,8 @@ Author: Jarret Jheng Ch'ng
 Date: 4/12/2019
 '''
 
-from pdf-scraper.py import extract_text_from_pdf
+import pdf-scraper
 
-extract_text_from_pdf("sampleSetuFile1")
+file = extract_text_from_pdf("sampleSetuFile1")
+
+print(file)

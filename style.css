@@ -1,0 +1,16 @@
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+circle.back {
+    fill: midnightblue;
+    stroke: deepskyblue;
+}
+
+circle.back:hover {
+    fill: deepskyblue;
+    stroke: midnightblue;
+    # background-color: yellow;
+}
+

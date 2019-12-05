@@ -3,13 +3,18 @@ html, body {
   height: 100%;
 }
 
+.label{
+    text-anchor: middle;
+    font-size: 1.5em;
+}
+
 circle.back {
-    fill: midnightblue;
-    stroke: deepskyblue;
+    fill: white;
+    stroke: black;
 }
 
 circle.back:hover {
-    fill: deepskyblue;
+    fill: lightblue;
     stroke: midnightblue;
     # background-color: yellow;
 }

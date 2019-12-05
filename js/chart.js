@@ -15,3 +15,11 @@ chartGroup.append("circle")
           .attr("r", height/3)  // roughly 1/3 size
           // .attr("cy", height/2)
           // .attr("cx", width/2)
+
+// add text to top
+const padding = 10;
+chartGroup.append("text")
+          .attr("class", "label")
+          .attr("y", -(height/3) - padding)
+          .attr("x", 0)
+          .text("Assessment");

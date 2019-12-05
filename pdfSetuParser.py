@@ -46,6 +46,7 @@ def extractSetuFolder(folderName):
 	# extracts agree rates in each file
 	for file in filesToExtract:
 		rates = extractAgreeRates(folderName + "/" + file)
+		print("Parsed:",file)
 		output.append((file,rates))
 
 	return output
@@ -61,7 +62,7 @@ def findPDFs(folderName):
 	for i in folder:
 		files = i[-1] # take the last item in i (all files in folder)
 		for names in files:
-			if ".pdf" in names: # find files with .pdf in the name
+			if (".pdf" in names) and ("CLAYTON" in names): # find files with .pdf in the name
 				pdfFiles.append(names)
 		break 
 		# only the first iteration is useful for our use

@@ -1,7 +1,7 @@
 '''
 Extracts a Monash SETU pdf file from 
 https://www.monash.edu/ups/setu/about/setu-results/unit-evaluation-reports 
-and exports it into a csv file.
+and exports it into a csv file (coming soon)
 
 Notes: Having some issues extracting Options from the table because 
 they tend to be concatenated after using the pdf parser.
@@ -12,6 +12,7 @@ Date: 4/12/2019
 
 import pdfScraper
 import re
+import os
 
 def extractAgreeRates(setuFile):
 	file = pdfScraper.extract_text_from_pdf(setuFile)
@@ -33,6 +34,41 @@ def extractAgreeRates(setuFile):
 
 	return agreeRate
 
+def extractSetuFolder(folderName):
+	'''Extracts agree rates from every pdf file in a given folder'''
+	output = []
+
+	# lists all pdfs in a given folder
+	filesToExtract = findPDFs(folderName)
+
+	print("Extracting files:", filesToExtract)
+
+	# extracts agree rates in each file
+	for file in filesToExtract:
+		rates = extractAgreeRates(folderName + "/" + file)
+		output.append((file,rates))
+
+	return output
+
+def findPDFs(folderName):
+	'''Return a list of pdfs filenames in the given folderName'''
+	pdfFiles = []
+
+	# get the current working directory + folder name
+	folder = os.walk(os.getcwd() + "/" + folderName)
+
+	# go through the provided folder
+	for i in folder:
+		files = i[-1] # take the last item in i (all files in folder)
+		for names in files:
+			if ".pdf" in names: # find files with .pdf in the name
+				pdfFiles.append(names)
+		break 
+		# only the first iteration is useful for our use
+		# hence the break
+
+	return pdfFiles
+
 if __name__ == '__main__':
-	a = extractAgreeRates("sampleSetuFile1.pdf")
-	print(a)
+	# print(extractAgreeRates("sampleSetuFile1.pdf"))
+	print(extractSetuFolder("sampleSetuPDFs"))

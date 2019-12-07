@@ -43,11 +43,11 @@ function queryUnit() {
 
 
 
-
-
 function visualise(unitCode) {
       // Setting up the svg
-      const svg = d3.select("body")
+      const svg = d3.select("#svgElem");
+      svg.selectAll("*").remove();
+      svg
       .append("svg")
       .attr("height", "100%")
       .attr("width", "100%"),

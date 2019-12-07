@@ -3,10 +3,12 @@
 function queryUnit() {
       $(document).ready(function() {
 
+            // the submission button is disabled by default
             document.getElementById("submit").disabled = true;
       
             const unitList = Array.from(document.getElementById("units").options).map(e => e.value);
       
+            // toggle the submission button so that it is disabled when the input is not in the unit list
             const toggleSubmit = () => {
                   if (unitList.includes(document.getElementById("inputField").value.trim().toUpperCase())) {
                         document.getElementById("submit").disabled = false;  
@@ -16,14 +18,16 @@ function queryUnit() {
                   }
             }
       
+            // only allow the user to submit when the input is valid (it must be an option in the datalist)
             $("#inputField").on("input", function () {
                   toggleSubmit();
             });
       
+            // on submission of the form, perform visulisation for the chosen unit
             document.getElementById("form").onsubmit = () => {
             const chosenUnit = document.getElementById("inputField").value.trim().toUpperCase();
 
-            console.log("hello");
+            // visualise the chosen unit
             visualise(chosenUnit);
       
             // After submission, clear the input field and disable submit button

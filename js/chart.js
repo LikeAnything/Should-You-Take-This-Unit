@@ -81,6 +81,20 @@ function visualise(unitCode) {
             {x: unitScores.activities * Math.cos(9 * Math.PI/10), y: -unitScores.activities * Math.sin(9* Math.PI/10), text: "Activities"}
       ].map(p => {p.x *= maxRadius; p.y *= maxRadius; return p});
 
+
+      // make a line generator
+      const line = d3.line()
+                  .x(d => d.x)
+                  .y(d => d.y)
+                  .curve(d3.curveCardinalClosed.tension(0.3));
+
+      // add a path using the line generator
+      chartGroup.append("path")
+                .attr("class", "area")
+                  .attr("fill-opacity", "0.5")
+                  .attr("stroke", "#003300")
+                  .attr("d", line(points))
+
       // add 5 concentric circles
       for (i = 0; i < 5; i++) {
             const circleRadius = maxRadius - (height/15)*i;
@@ -113,20 +127,6 @@ function visualise(unitCode) {
             let axis = d3.axisLeft(linearScale);
             group.call(axis)
       }
-
-
-      // make a line generator
-      const line = d3.line()
-                  .x(d => d.x)
-                  .y(d => d.y)
-                  .curve(d3.curveCardinalClosed.tension(0.3));
-
-      // add a path using the line generator
-      chartGroup.append("path")
-            .attr("fill", "green")
-            .attr("fill-opacity", "0.5")
-            .attr("stroke", "#003300")
-            .attr("d", line(points))
 
 
 

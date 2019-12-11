@@ -1,6 +1,13 @@
+:root{
+  --main-background-colour: #336699;
+  --border-colour: #ccffff;
+  --text-colour: white;
+}
+
 html, body {
   margin: 0;
   height: 100%;
+  background-color: var(--main-background-colour);
 }
 
 .label{
@@ -9,8 +16,10 @@ html, body {
 }
 
 circle.back {
-    fill: white;
-    stroke: black;
+    fill: var(--main-background-colour);
+    fill-opacity: 0.1;
+    stroke: white;
+    stroke-dasharray: 4;
 }
 
 circle.back:hover {
@@ -19,3 +28,14 @@ circle.back:hover {
     # background-color: yellow;
 }
 
+.area{
+  fill: #00ff00;
+  fill-opacity: 0.5;
+  stroke: var(--border-colour);
+}
+
+g.tick text {
+  font-size: 12px;
+  fill: var(--text-colour);
+  fill-opacity: 0.7;
+}

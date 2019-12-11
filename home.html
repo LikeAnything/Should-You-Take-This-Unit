@@ -4,10 +4,27 @@
   <meta charset="utf-8">
   <title>Should you take this unit??</title>
   <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="style.css" >
 </head>
 
 <body>
+
   <script src="js/chart.js"></script>
+
+  <form id="form">
+  <input id="inputField" name="unit" list="units" placeholder="Unit Code">
+  <input id="submit" type="submit">
+  </form>
+  <datalist id="units">
+    <option value="FIT1045">
+    <option value="FIT1008">
+    <option value="ATS3147">
+    <option value="ATS1141">
+  </datalist>
+
+<svg width="100%" height="100%" id="svgElem"></svg>
+
+
 </body>
 </html>

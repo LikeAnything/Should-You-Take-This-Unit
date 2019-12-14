@@ -9,7 +9,12 @@ def stats_from_data_set(data_list):
 
 
 def calculate_score(raw, data_stats):
-    return ((raw - data_stats[0]) / data_stats[1]) + 3
+    score = ((raw - data_stats[0]) / data_stats[1]) + 3
+    if score < 0:
+        score = 0
+    if score > 5:
+        score = 5
+    return score
 
 
 def read_csv():

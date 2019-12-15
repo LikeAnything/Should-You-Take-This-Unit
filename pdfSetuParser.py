@@ -14,7 +14,7 @@ import pdfScraper
 import re
 import os
 
-def extractAgreeRates(setuFile):
+def extractEssentials(setuFile):
 	file = pdfScraper.extract_text_from_pdf(setuFile)
 
 	# semiParsed is a list of tables
@@ -22,6 +22,24 @@ def extractAgreeRates(setuFile):
 	# e.g. "100. " would be accepted by the regex
 	# we split it by this regex to find each table
 	semiParsed = re.split("\d\. ",file)
+
+	# Get semester and year
+	heading = re.split(", ",semiParsed[0])
+	year = int(heading[1][:4])
+	semester = int(heading[0].split("Semester")[-1].strip())
+
+	# Extracting the response rates
+	response = semiParsed[0].split("Survey")[-1]
+
+	# Extra cleaning
+	cleanedRates = []
+	for subParse in re.split("[a-z]|[A-Z]",response):
+		if subParse.strip() != '':
+			cleanedRates.append(subParse)
+
+	cleanedRates[0] = int(cleanedRates[0]) # responded
+	cleanedRates[1] = int(cleanedRates[1]) # invited
+	cleanedRates[2] = float(cleanedRates[2].replace("%",""))
 
 	# a list to hold all of the percentages from each table
 	agreeRate = []
@@ -32,7 +50,12 @@ def extractAgreeRates(setuFile):
 		# Split by the keyword and by the % so that we can extract the numeric value of it
 		agreeRate.append(float(i.split("Strongly Agree/Agree:")[-1].split("%")[0]))
 
-	return agreeRate
+	return (year,semester,cleanedRates,agreeRate)
+
+
+def extractAgreeRatesAndRespondCounts(setuFile):
+	ratesOnly = extractEssentials(setuFile)[-1]
+	return ratesOnly
 
 def extractSetuFolder(folderName,verbose=False):
 	'''Extracts agree rates from every pdf file in a given folder'''
@@ -46,7 +69,7 @@ def extractSetuFolder(folderName,verbose=False):
 
 	# extracts agree rates in each file
 	for file in filesToExtract:
-		rates = extractAgreeRates(folderName + "/" + file)
+		rates = extractEssentials(folderName + "/" + file)
 		# Uncomment for verbose mode
 
 		if verbose:
@@ -57,11 +80,20 @@ def extractSetuFolder(folderName,verbose=False):
 	return output
 
 
-def extractFolderToCSV(folderName):
+def extractFolderToCSV(folderName,newCSVFileName,verbose=False):
 	'''Parses the folder full of pdfs and turn it into a csv format'''
 
+	csvFile = open(newCSVFileName,"w")
+
 	# column headers for the csv file
-	csvFile = "Unit,Campus,Learning outcomes were clear,Assessments were clear,\
+	csv = "Unit,\
+	Campus,\
+	Year,\
+	Semester\
+	,Reponses\
+	,Invited\
+	,Response Rate\
+	,Learning outcomes were clear,Assessments were clear,\
 	Assessments allowed me to demonstrate the learning outcomes,\
 	Feedback helped me achieve the learning outcomes,\
 	Resources helped me achieve the learning outcomes,Activities helped me achieve the learning outcomes,\
@@ -69,23 +101,36 @@ def extractFolderToCSV(folderName):
 	Online resources were useful,Workload was manageable,Tutorial/pracs were useful,Pre-class activities were useful\n"
 
 	# Extract the tables from each file
-	data = extractSetuFolder(folderName)
+	data = extractSetuFolder(folderName,verbose)
 
 	# Laying down the name and the information of each file
 	for (name,info) in data:
 		# Get formatted version of filename
 		formattedFileName = cleanUpSetuFilename(name)
 
+		if verbose:
+			print(formattedFileName,info)
+
 		# Add unit name and campus
-		csvFile += formattedFileName[0] + "," + formattedFileName[1] + "," 
+		csv += (formattedFileName[0] # Unit name \
+		+ "," + formattedFileName[1] # Campus \
+		+ "," + str(info[0]) # Year \
+		+ "," + str(info[1]) # Semester \
+		+ "," + str(info[2][0]) # Responses \
+		+ "," + str(info[2][1]) # Invited \
+		+ "," + str(info[2][2]) # Response rate\
+		+ ",")
 		
 		# Writes info of each table to the columns
-		for percentage in info:
-			csvFile += str(percentage) + ","
+		for percentage in info[-1]:
+			csv += str(percentage) + ","
 
-		csvFile += "\n" # prepare it for a new entry/file
+		csv += "\n" # prepare it for a new entry/file
 
-	return csvFile
+	csvFile.write(csv)
+	csvFile.close()
+
+	return csv
 
 
 def cleanUpSetuFilename(name):
@@ -117,8 +162,8 @@ def findPDFs(folderName):
 	for i in folder:
 		files = i[-1] # take the last item in i (all files in folder)
 		for names in files:
-			if (".pdf" in names) and ("CLAYTON" in names) and ("CAMPUS_ON" in names): 
-			# find files with .pdf in the name and is from clayton and is on campus
+			if (".pdf" in names) and ("CAMPUS_ON" in names): 
+			# find files with .pdf in the name and is on campus
 				pdfFiles.append(names)
 		break 
 		# only the first iteration is useful for our use
@@ -127,6 +172,6 @@ def findPDFs(folderName):
 	return pdfFiles
 
 if __name__ == '__main__':
-	# print(extractAgreeRates("sampleSetuFile1.pdf"))
-	print(extractFolderToCSV("sampleSetuPDFs"))
+	# print(extractAgreeRatesAndRespondCounts("sampleSetuPDFs/UE00389-Unit_Evaluation_Report-FIT1003_SAFRICA_ON-CAMPUS_ON_S1-01-1915544_c2708757-78de-4d7f-a5da-732bc7bf37f9en-US.pdf"))
+	print(extractFolderToCSV("sampleSetuPDFs","output.csv",True))
 	# cleanUpSetuFilename("UE00389-Unit_Evaluation_Report-FIT4441_CLAYTON_ON-CAMPUS_ON_S1-01-1946232_ffb075ed-48d0-4d57-88d2-5fe2cb1e32a5en-US.pdf")

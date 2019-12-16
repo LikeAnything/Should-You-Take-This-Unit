@@ -36,4 +36,4 @@ def extract_text_from_pdf(pdf_path):
         return text
  
 if __name__ == '__main__':
-    print(extract_text_from_pdf('sample.pdf'))
+    print(extract_text_from_pdf('sampleSetuPDFs/UE00389-Unit_Evaluation_Report-FIT1003_SAFRICA_ON-CAMPUS_ON_S1-01-1915544_c2708757-78de-4d7f-a5da-732bc7bf37f9en-US.pdf'))

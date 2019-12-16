@@ -86,19 +86,19 @@ def extractFolderToCSV(folderName,newCSVFileName,verbose=False):
 	csvFile = open(newCSVFileName,"w")
 
 	# column headers for the csv file
-	csv = "Unit,\
-	Campus,\
-	Year,\
-	Semester\
-	,Reponses\
-	,Invited\
-	,Response Rate\
-	,Learning outcomes were clear,Assessments were clear,\
-	Assessments allowed me to demonstrate the learning outcomes,\
-	Feedback helped me achieve the learning outcomes,\
-	Resources helped me achieve the learning outcomes,Activities helped me achieve the learning outcomes,\
-	Attempted to engage in this unit,Is satisfied with the unit,I could see how the topics were related,\
-	Online resources were useful,Workload was manageable,Tutorial/pracs were useful,Pre-class activities were useful\n"
+	csv = ("Unit"
+	",Campus"
+	",Year"
+	",Semester"
+	",Responses"
+	",Invited"
+	",Response Rate"
+	",Learning outcomes were clear,Assessments were clear"
+	",Assessments allowed me to demonstrate the learning outcomes"
+	",Feedback helped me achieve the learning outcomes"
+	",Resources helped me achieve the learning outcomes,Activities helped me achieve the learning outcomes"
+	",Attempted to engage in this unit,Is satisfied with the unit,I could see how the topics were related"
+	",Online resources were useful,Workload was manageable,Tutorial/pracs were useful,Pre-class activities were useful\n")
 
 	# Extract the tables from each file
 	data = extractSetuFolder(folderName,verbose)

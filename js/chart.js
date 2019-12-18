@@ -1,8 +1,4 @@
-// Set up handler for csv
-d3.csv("data.csv")
-  .get(function(error, data){
-    console.log(data)});
-
+import data from jsData;
 
 function queryUnit() {
       $(document).ready(function() {

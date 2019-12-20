@@ -1,4 +1,8 @@
-import data from jsData;
+
+
+const unitData = data().sort(function (a, b) {
+      return a.unitCode > b.unitCode ? 1 : -1;
+});
 
 function queryUnit() {
       $(document).ready(function() {
@@ -27,8 +31,10 @@ function queryUnit() {
             document.getElementById("form").onsubmit = () => {
             const chosenUnit = document.getElementById("inputField").value.trim().toUpperCase();
 
+
             // visualise the chosen unit
             visualise(chosenUnit);
+
 
             // After submission, clear the input field and disable submit button
             document.getElementById("inputField").value = "";
@@ -41,16 +47,6 @@ function queryUnit() {
         });
 }
 
-
-function getUnitScores(unitCode) {
-      return {
-            assessment: (4/5),
-            feedback: (3/5),
-            satisfaction:  (2/5),
-            resources: (4/5),
-            activities: (5/5)
-      }
-}
 
 
 
@@ -65,11 +61,13 @@ function visualise(unitCode) {
 
       // get height and width automatically
       const width = window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth,
-      height = window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight,
+      height = window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight;
       // margin = {left: 50, right: 50, top: 40, bottom: 0},
 
-      unitScores = getUnitScores(unitCode)
-      chartGroup = svg.append("g").attr("class", "chart").attr("transform","translate("+width/2+","+height/2+")"),
+
+      unitScores = getUnitScores(unitCode);
+
+      chartGroup = svg.append("g").attr("class", "chart").attr("transform","translate("+width/2+","+height/2+")");
       maxRadius = height/3;
 
       // points for each criteria
@@ -127,59 +125,28 @@ function visualise(unitCode) {
             let axis = d3.axisLeft(linearScale);
             group.call(axis)
       }
-
-
-
-function queryUnit() {
-      $(document).ready(function() {
-
-            // the submission button is disabled by default
-            document.getElementById("submit").disabled = true;
-
-            const unitList = Array.from(document.getElementById("units").options).map(e => e.value);
-
-            // toggle the submission button so that it is disabled when the input is not in the unit list
-            const toggleSubmit = () => {
-                  if (unitList.includes(document.getElementById("inputField").value.trim().toUpperCase())) {
-                        document.getElementById("submit").disabled = false;
-                  }
-                  else {
-                        document.getElementById("submit").disabled = true;
-                  }
-            }
-
-            // only allow the user to submit when the input is valid (it must be an option in the datalist)
-            $("#inputField").on("input", function () {
-                  toggleSubmit();
-            });
-
-            // on submission of the form, perform visulisation for the chosen unit
-            document.getElementById("form").onsubmit = () => {
-            const chosenUnit = document.getElementById("inputField").value.trim().toUpperCase();
-
-            // visualise the chosen unit
-            visualise(chosenUnit);
-
-            // After submission, clear the input field and disable submit button
-            document.getElementById("inputField").value = "";
-            document.getElementById("submit").disabled = true;
-
-            // Stop form from submitting
-            return false;
-            };
-
-        });
 }
 
 
+
 function getUnitScores(unitCode) {
-      return {
-            assessment: (4/5),
-            feedback: (3/5),
-            satisfaction:  (2/5),
-            resources: (4/5),
-            activities: (5/5)
+      for (i = 0; i < unitData.length; i++) {
+            const u = unitData[i];
+            if (u.unitCode.toUpperCase() === unitCode.toUpperCase()) {
+                  return u
+            }
       }
+      return { 
+            unitCode: 'FIT1003',
+            campus: 'SAFRICA',
+            year: '2019',
+            semester: '1',
+            assessment: 3.2288948145676066,
+            feedback: 2.071678029963506,
+            satisfaction: 3.415435914654315,
+            resources: 3.8363324412685156,
+            activities: 2.534565720155106,
+            };
 }
 
 
@@ -209,7 +176,7 @@ function visualise(unitCode) {
             {x: unitScores.satisfaction * Math.cos(17 * Math.PI/10), y: -unitScores.satisfaction  * Math.sin(17* Math.PI/10), text: "Satisfaction"},
             {x: unitScores.resources * Math.cos(13 * Math.PI/10), y: -unitScores.resources * Math.sin(13* Math.PI/10), text: "Resources"},
             {x: unitScores.activities * Math.cos(9 * Math.PI/10), y: -unitScores.activities * Math.sin(9* Math.PI/10), text: "Activities"}
-      ].map(p => {p.x *= maxRadius; p.y *= maxRadius; return p});
+      ].map(p => {p.x *= maxRadius / 5; p.y *= maxRadius / 5; return p});
 
 
       // make a line generator
@@ -260,7 +227,11 @@ function visualise(unitCode) {
 
 
 
-======= end
 }
+
+
+
+
+
 
 queryUnit();

@@ -113,11 +113,13 @@ def read_csv():
 
 def generate_javascript():
     output_file = open("jsData.js", "w")
+    html_list = open("html_list.html", "w")
     standardised = read_csv()
     function_declaration = "function data() { \n return ["
     output_file.write(function_declaration)
 
     for unit in standardised:
+        html_list.write("<option value='" + unit[0] + "'>" + "\n")
         new_block = "{ \n"
         new_block += "unitCode: '" + unit[0] + "'," + "\n"
         new_block += "campus: '" + unit[1] + "'," + "\n"
@@ -132,6 +134,7 @@ def generate_javascript():
         output_file.write(new_block)
     output_file.write("]")
     output_file.write("}")
+    html_list.close()
     output_file.close()
 
 

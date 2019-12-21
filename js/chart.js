@@ -149,26 +149,12 @@ function getUnitScores(unitCode) {
             };
 }
 
-
-
-function visualise(unitCode) {
-      // Setting up the svg
-      const svg = d3.select("#svgElem");
-      svg.selectAll("*").remove();
-      svg
-      .append("svg")
-      .attr("height", "100%")
-      .attr("width", "100%");
-
-      // get height and width automatically
-      const width = window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth,
-      height = window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight,
-      // margin = {left: 50, right: 50, top: 40, bottom: 0},
-
-      unitScores = getUnitScores(unitCode)
-      chartGroup = svg.append("g").attr("class", "chart").attr("transform","translate("+width/2+","+height/2+")"),
-      maxRadius = height/3;
-
+function drawUnit(svgGroup, unitCode, maxRadius){
+      /*
+       * Draws a unit on the svgGroup.
+       *
+       */
+      const unitScores = getUnitScores(unitCode);
       // points for each criteria
       points = [
             {x: unitScores.assessment * Math.cos(Math.PI/2), y: - unitScores.assessment * Math.sin(Math.PI/2), text: "Assessment"},
@@ -178,7 +164,6 @@ function visualise(unitCode) {
             {x: unitScores.activities * Math.cos(9 * Math.PI/10), y: -unitScores.activities * Math.sin(9* Math.PI/10), text: "Activities"}
       ].map(p => {p.x *= maxRadius / 5; p.y *= maxRadius / 5; return p});
 
-
       // make a line generator
       const line = d3.line()
                   .x(d => d.x)
@@ -186,11 +171,34 @@ function visualise(unitCode) {
                   .curve(d3.curveCardinalClosed.tension(0.3));
 
       // add a path using the line generator
-      chartGroup.append("path")
-                .attr("class", "area")
-                  .attr("fill-opacity", "0.5")
-                  .attr("stroke", "#003300")
-                  .attr("d", line(points))
+      svgGroup.append("path")
+              .attr("class", "area")
+              .attr("fill-opacity", "0.5")
+              .attr("stroke", "#003300")
+              .attr("d", line(points))
+
+}
+
+
+function visualise(unitCode) {
+      // Setting up the svg
+      const svg = d3.select("#svgElem");
+      svg.selectAll("*").remove();
+      svg.append("svg")
+         .attr("height", "100%")
+         .attr("width", "100%");
+
+      // useful parameters
+      // get height and width automatically
+      const width = window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth,
+      height = window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight,
+      maxRadius = height/3;
+
+      // group where area will be added
+      const chartGroup = svg.append("g").attr("class", "chart").attr("transform","translate("+width/2+","+height/2+")");
+      drawUnit(chartGroup, 'FIT2099', maxRadius);
+      drawUnit(chartGroup, 'FIT2014', maxRadius);
+
 
       // add 5 concentric circles
       for (i = 0; i < 5; i++) {
@@ -224,9 +232,6 @@ function visualise(unitCode) {
             let axis = d3.axisLeft(linearScale);
             group.call(axis)
       }
-
-
-
 }
 
 

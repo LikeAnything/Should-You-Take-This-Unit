@@ -103,15 +103,6 @@ function visualise(unitCode) {
       }
 
 
-      // add a small circle to each point
-      points.forEach(p => {
-            chartGroup.append("circle")
-                        .attr("class", "point")
-                        .attr("cx", p.x)
-                        .attr("cy", p.y)
-                        .attr("r", 2)
-            });
-
       // creating axes
       const axisGroup = chartGroup.append("g").attr("class", "axis"),
             linearScale = d3.scaleLinear()
@@ -152,7 +143,6 @@ function getUnitScores(unitCode) {
 function drawUnit(svgGroup, unitCode, maxRadius){
       /*
        * Draws a unit on the svgGroup.
-       *
        */
       const unitScores = getUnitScores(unitCode),
       // points for each criteria
@@ -218,8 +208,6 @@ function visualise(unitCode) {
                   .attr("stroke-opacity", String(1 - 0.2*i))
                   .attr("r", circleRadius)
       }
-
-
 
       // creating axes
       const axisGroup = chartGroup.append("g").attr("class", "axis"),

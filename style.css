@@ -29,8 +29,7 @@ circle.back:hover {
 }
 
 .area{
-  fill: #00ff00;
-  fill-opacity: 0.5;
+  fill-opacity: 0.7;
   stroke: var(--border-colour);
 }
 

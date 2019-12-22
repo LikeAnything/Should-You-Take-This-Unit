@@ -154,7 +154,7 @@ function drawUnit(svgGroup, unitCode, maxRadius){
        * Draws a unit on the svgGroup.
        *
        */
-      const unitScores = getUnitScores(unitCode);
+      const unitScores = getUnitScores(unitCode),
       // points for each criteria
       points = [
             {x: unitScores.assessment * Math.cos(Math.PI/2), y: - unitScores.assessment * Math.sin(Math.PI/2), text: "Assessment"},
@@ -162,20 +162,31 @@ function drawUnit(svgGroup, unitCode, maxRadius){
             {x: unitScores.satisfaction * Math.cos(17 * Math.PI/10), y: -unitScores.satisfaction  * Math.sin(17* Math.PI/10), text: "Satisfaction"},
             {x: unitScores.resources * Math.cos(13 * Math.PI/10), y: -unitScores.resources * Math.sin(13* Math.PI/10), text: "Resources"},
             {x: unitScores.activities * Math.cos(9 * Math.PI/10), y: -unitScores.activities * Math.sin(9* Math.PI/10), text: "Activities"}
-      ].map(p => {p.x *= maxRadius / 5; p.y *= maxRadius / 5; return p});
-
+      ].map(p => {p.x *= maxRadius / 5; p.y *= maxRadius / 5; return p}),
       // make a line generator
-      const line = d3.line()
+      line = d3.line()
                   .x(d => d.x)
                   .y(d => d.y)
-                  .curve(d3.curveCardinalClosed.tension(0.3));
+                  .curve(d3.curveCardinalClosed.tension(0.3)),
+      // pick a colour
+      colour = d3.interpolateRainbow(Math.random());
+      // colour = d3.color(d3.interpolateRainbow(Math.random())).brighter(0.5);  // makes a colour brighter. not sure if necessary..
+
 
       // add a path using the line generator
       svgGroup.append("path")
               .attr("class", "area")
-              .attr("fill-opacity", "0.5")
-              .attr("stroke", "#003300")
+              .attr("fill", colour)
               .attr("d", line(points))
+
+      // add a small circle to each point
+      points.forEach(p => {
+            svgGroup.append("circle")
+                    .attr("class", "point")
+                    .attr("cx", p.x)
+                    .attr("cy", p.y)
+                    .attr("r", 2)
+            });
 
 }
 
@@ -196,8 +207,7 @@ function visualise(unitCode) {
 
       // group where area will be added
       const chartGroup = svg.append("g").attr("class", "chart").attr("transform","translate("+width/2+","+height/2+")");
-      drawUnit(chartGroup, 'FIT2099', maxRadius);
-      drawUnit(chartGroup, 'FIT2014', maxRadius);
+      drawUnit(chartGroup, unitCode, maxRadius);
 
 
       // add 5 concentric circles
@@ -210,14 +220,6 @@ function visualise(unitCode) {
       }
 
 
-      // add a small circle to each point
-      points.forEach(p => {
-            chartGroup.append("circle")
-                        .attr("class", "point")
-                        .attr("cx", p.x)
-                        .attr("cy", p.y)
-                        .attr("r", 2)
-            });
 
       // creating axes
       const axisGroup = chartGroup.append("g").attr("class", "axis"),

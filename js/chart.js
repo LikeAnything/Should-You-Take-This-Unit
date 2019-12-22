@@ -69,24 +69,32 @@ function getUnitScores(unitCode) {
             };
 }
 
+
+// points going around the pentagon (clockwise)
+const pentagonPoints = [
+      {x: Math.cos(Math.PI/2),       y: Math.sin(Math.PI/2)},
+      {x: Math.cos(21 * Math.PI/10), y: Math.sin(21 * Math.PI/10)},
+      {x: Math.cos(17 * Math.PI/10), y: Math.sin(17* Math.PI/10)},
+      {x: Math.cos(13 * Math.PI/10), y: Math.sin(13* Math.PI/10)},
+      {x: Math.cos(9 * Math.PI/10),  y: Math.sin(9* Math.PI/10)}
+      ],
+      axisLabels = ["assessment", "feedback", "satisfaction","resources", "activities"]
+
+
 function drawUnit(svgGroup, unitCode, maxRadius){
       /*
        * Draws a unit on the svgGroup.
        */
       const unitScores = getUnitScores(unitCode),
-      // points for each criteria
-      points = [
-            {x: unitScores.assessment * Math.cos(Math.PI/2), y: - unitScores.assessment * Math.sin(Math.PI/2), text: "Assessment"},
-            {x: unitScores.feedback * Math.cos(21 * Math.PI/10), y: -unitScores.feedback * Math.sin(21 * Math.PI/10), text: "Feedback"},
-            {x: unitScores.satisfaction * Math.cos(17 * Math.PI/10), y: -unitScores.satisfaction  * Math.sin(17* Math.PI/10), text: "Satisfaction"},
-            {x: unitScores.resources * Math.cos(13 * Math.PI/10), y: -unitScores.resources * Math.sin(13* Math.PI/10), text: "Resources"},
-            {x: unitScores.activities * Math.cos(9 * Math.PI/10), y: -unitScores.activities * Math.sin(9* Math.PI/10), text: "Activities"}
-      ].map(p => {p.x *= maxRadius / 5; p.y *= maxRadius / 5; return p}),
       // make a line generator
       line = d3.line()
                   .x(d => d.x)
                   .y(d => d.y)
                   .curve(d3.curveCardinalClosed.tension(0.3)),
+      // get points using the pentagon scale
+      points = pentagonPoints.map((e, i) => {const para = axisLabels[i];
+                                             return {x: e.x * unitScores[para], y: - e.y * unitScores[para]}})
+                             .map(p => {p.x *= maxRadius / 5; p.y *= maxRadius / 5; return p});
       // pick a colour
       colour = d3.interpolateRainbow(Math.random());
       // colour = d3.color(d3.interpolateRainbow(Math.random())).brighter(0.5);  // makes a colour brighter. not sure if necessary..

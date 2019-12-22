@@ -134,6 +134,8 @@ function visualise(unitCode) {
 
       // group where area will be added
       const chartGroup = svg.append("g").attr("class", "chart").attr("transform","translate("+width/2+","+height/2+")");
+
+      // draw unit to svg
       drawUnit(chartGroup, unitCode, maxRadius);
 
 
@@ -146,19 +148,27 @@ function visualise(unitCode) {
                   .attr("r", circleRadius)
       }
 
-      // creating axes
+      // creating axes and text labels
       const axisGroup = chartGroup.append("g").attr("class", "axis"),
             linearScale = d3.scaleLinear()
                             .domain([0, 100])
                             .range([maxRadius, 0]);
-      for (i = 0; i < 5; i++) {
+
+      pentagonPoints.forEach((pos, i) => {
             // make a new group for each axis
-            let group = axisGroup.append("g")
-                     .attr("class", "axis a"+i)
-                     .attr("transform","rotate("+ i * 72 +") " +"translate(0,-"+maxRadius+")")
-            let axis = d3.axisLeft(linearScale);
+            const group = axisGroup.append("g")
+                                   .attr("class", "axis a"+i)
+                                   .attr("transform","rotate("+ i * 72 +") " +"translate(0,-"+maxRadius+")"),
+                  axis = d3.axisLeft(linearScale);
             group.call(axis)
-      }
+
+            // add a new label
+            chartGroup.append("text")
+                 .attr("class", "label")
+                 .attr("y", - pos.y * maxRadius * 1.15)
+                 .attr("x", pos.x * maxRadius * 1.3)
+                 .text(axisLabels[i]);
+      });
 }
 
 
